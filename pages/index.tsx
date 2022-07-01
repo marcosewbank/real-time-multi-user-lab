@@ -1,6 +1,7 @@
+import { Heading } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Test } from "../src/components/Test";
+import { Chat } from "../src/components/Chat";
 
 import styles from "../styles/Home.module.css";
 
@@ -14,7 +15,8 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <Test />
+        <Heading>Hello world!</Heading>
+        <Chat />
       </main>
 
       <footer className={styles.footer}>Footer</footer>

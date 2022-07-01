@@ -1,94 +1,46 @@
-import React, { useState, useEffect, useRef } from "react";
-import SocketIOClient from "socket.io-client";
-import {
-  Container,
-  Heading,
-  Box,
-  List,
-  ListIcon,
-  ListItem,
-  Input,
-  Button,
-} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Input, List, ListIcon, ListItem } from "@chakra-ui/react";
+import { useSocket } from "../hooks/useSocket";
 import { MdCheckCircle } from "react-icons/md";
 
-type Props = {};
+export const Chat = () => {
+  const [messageList, setMessageList] = useState<string[]>([]);
+  const { socket, handleSocketPost } = useSocket(
+    `http://localhost:3000/${process.env.BASE_URL}` ?? ""
+  );
 
-const user = "User_" + String(new Date().getTime()).substr(-3);
-
-interface IMsg {
-  user: string;
-  msg: string;
-}
-
-export const Chat = (props: Props) => {
-  const inputRef = useRef(null);
-  // connected flag
-  const [connected, setConnected] = useState<boolean>(false);
-
-  // init chat and message
-  const [chat, setChat] = useState<IMsg[]>([]);
-  const [msg, setMsg] = useState<string>("");
-
-  useEffect((): any => {
-    // connect to socket server
-    const socket = SocketIOClient.connect(process.env.BASE_URL ?? "", {
-      path: "/api/socketio",
-    });
-
-    // log socket connection
-    socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
-      setConnected(true);
-    });
-
-    // update chat on new message dispatched
-    socket.on("message", (message: IMsg) => {
-      chat.push(message);
-      setChat([...chat]);
-    });
-
-    // socket disconnet onUnmount if exists
-    if (socket) return () => socket.disconnect();
-  }, []);
-
-  const sendMessage = async () => {
-    if (msg) {
-      // build message obj
-      const message: IMsg = {
-        user,
-        msg,
-      };
-
-      // dispatch message to other users
-      const resp = await fetch("https://localhost:3000/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
+  useEffect(() => {
+    if (socket) {
+      // update chat on new message dispatched
+      socket.on("message", (message: any) => {
+        setMessageList((oldState) => {
+          return [...oldState, message];
+        });
       });
-
-      // reset field if OK
-      if (resp.ok) setMsg("");
     }
+  }, [socket]);
 
-    // focus after click
-    inputRef?.current?.focus();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const messageInput = event.currentTarget.elements.namedItem(
+      "message"
+    ) as HTMLInputElement;
+
+    handleSocketPost(messageInput.value);
+
+    messageInput.value = "";
   };
 
   return (
-    <Container maxW="75%" color="white">
-      <Box>
-        <Heading as="h1">Realtime Chat App</Heading>
-        <Heading as="h2">in Next.js and Socket.io</Heading>
-      </Box>
+    <Box>
       <List spacing={3}>
-        {chat.length ? (
-          chat.map((chat, i) => (
+        {messageList.length ? (
+          messageList.map((chat, i) => (
             <ListItem key={"msg_" + i}>
               <ListIcon as={MdCheckCircle} color="green.500" />
-              {chat.user === user ? "Me" : chat.user}: {chat.msg}
+              {chat}
+              {/* {chat.user === user ? "Me" : chat.user}: {chat.msg} */}
             </ListItem>
           ))
         ) : (
@@ -97,27 +49,12 @@ export const Chat = (props: Props) => {
           </Box>
         )}
       </List>
-
-      <Box display="flex">
-        <Input
-          ref={inputRef}
-          type="text"
-          value={msg}
-          placeholder={connected ? "Type a message..." : "Connecting..."}
-          disabled={!connected}
-          onChange={(e) => {
-            setMsg(e.target.value);
-          }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              sendMessage();
-            }
-          }}
-        />
-        <Button onClick={sendMessage} disabled={!connected}>
-          SEND
-        </Button>
-      </Box>
-    </Container>
+      <form onSubmit={handleSubmit}>
+        <Box display="flex" flexDirection="row">
+          <Input id="message" placeholder="Send your message" maxW="300px" />
+          <Button type="submit">Send</Button>
+        </Box>
+      </form>
+    </Box>
   );
 };
