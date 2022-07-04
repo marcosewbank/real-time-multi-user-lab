@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Divider,
+  List,
+  ListIcon,
+  ListItem,
+} from "@chakra-ui/react";
 import { useSocket } from "../hooks/useSocket";
 import { MdCheckCircle, MdDeleteForever } from "react-icons/md";
 import Message from "./Message";
@@ -46,18 +53,30 @@ export const Chat = ({ messages }: IMessages) => {
   }, [socket]);
 
   return (
-    <Box p="2rem">
+    <Box>
       <List spacing={3}>
         {messagesList.length ? (
           messagesList.map(({ name, message, id }) => (
-            <ListItem key={id}>
-              <ListIcon as={MdCheckCircle} color="green.500" />
-              {name}: {message}
-              <ListIcon
-                as={MdDeleteForever}
-                onClick={() => handleDelete(id)}
-                color="green.500"
-              />
+            <ListItem key={id} mb="0.5rem">
+              <Box display="flex" alignItems="center" mb="0.5rem">
+                <ListIcon as={MdCheckCircle} color="green.500" />
+                <Badge
+                  variant="solid"
+                  colorScheme="green"
+                  borderRadius="sm"
+                  padding="0.25rem"
+                  mr="0.25rem"
+                >
+                  {name}
+                </Badge>
+                : {message}
+                <ListIcon
+                  as={MdDeleteForever}
+                  onClick={() => handleDelete(id)}
+                  color="green.500"
+                />
+              </Box>
+              <Divider mb="0.5rem" />
             </ListItem>
           ))
         ) : (

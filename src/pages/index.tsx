@@ -1,4 +1,4 @@
-import { Heading } from "@chakra-ui/react";
+import { Container, Heading } from "@chakra-ui/react";
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { Chat } from "../components/Chat";
@@ -15,10 +15,10 @@ const Home: NextPage = (props: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <Heading>Hello world!</Heading>
+      <Container as="main" padding={["3rem", "2rem"]}>
+        <Heading>A simple chat</Heading>
         <Chat messages={props.messages} />
-      </main>
+      </Container>
 
       <footer className={styles.footer}>Footer</footer>
     </div>

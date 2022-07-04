@@ -37,7 +37,7 @@ const Message = (props: any) => {
             setNickName(null);
           }}
         >
-          {nickname}
+          {nickname ? nickname : "Anonymous"}
         </Button>
       ) : (
         <Input
