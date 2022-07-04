@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Input, List, ListIcon, ListItem } from "@chakra-ui/react";
+import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
 import { useSocket } from "../hooks/useSocket";
-import { MdCheckCircle } from "react-icons/md";
+import { MdCheckCircle, MdFace } from "react-icons/md";
+import Message from "./Message";
 
-export const Chat = () => {
-  const [messageList, setMessageList] = useState<string[]>([]);
+interface IMessages {
+  messages: IMessage[];
+}
+
+interface IMessage {
+  id: number;
+  name: string;
+  message: string;
+}
+
+export const Chat = ({ messages }: IMessages) => {
+  const [messagesList, setMessageList] = useState<IMessage[]>(messages);
+
   const { socket, handleSocketPost } = useSocket(
     `http://localhost:3000/${process.env.BASE_URL}` ?? ""
   );
@@ -20,27 +32,14 @@ export const Chat = () => {
     }
   }, [socket]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const messageInput = event.currentTarget.elements.namedItem(
-      "message"
-    ) as HTMLInputElement;
-
-    handleSocketPost(messageInput.value);
-
-    messageInput.value = "";
-  };
-
   return (
-    <Box>
-      <List data-testid="chat" spacing={3}>
-        {messageList.length ? (
-          messageList.map((chat, i) => (
-            <ListItem key={"msg_" + i}>
+    <Box p="2rem">
+      <List spacing={3}>
+        {messagesList.length ? (
+          messagesList.map(({ name, message }, i) => (
+            <ListItem key={"msg-" + i}>
               <ListIcon as={MdCheckCircle} color="green.500" />
-              {chat}
-              {/* {chat.user === user ? "Me" : chat.user}: {chat.msg} */}
+              {name}: {message}
             </ListItem>
           ))
         ) : (
@@ -49,17 +48,7 @@ export const Chat = () => {
           </Box>
         )}
       </List>
-      <form onSubmit={handleSubmit}>
-        <Box display="flex" flexDirection="row">
-          <Input
-            id="message"
-            placeholder="Send your message"
-            data-testid="message"
-            maxW="300px"
-          />
-          <Button type="submit">Send</Button>
-        </Box>
-      </form>
+      <Message handleSocketPost={handleSocketPost} />
     </Box>
   );
 };

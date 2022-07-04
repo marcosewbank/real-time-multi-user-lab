@@ -1,11 +1,14 @@
 import { Heading } from "@chakra-ui/react";
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
-import { Chat } from "../src/components/Chat";
+import { Chat } from "../components/Chat";
+import { getMessages } from "../lib/messages";
 
 import styles from "../styles/Home.module.css";
 
-const Home: NextPage = () => {
+const Home: NextPage = (props: any) => {
+  console.log("🚀 ~ file: index.tsx ~ line 10 ~ props", props);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,12 +19,18 @@ const Home: NextPage = () => {
 
       <main>
         <Heading>Hello world!</Heading>
-        <Chat />
+        <Chat messages={props.messages} />
       </main>
 
       <footer className={styles.footer}>Footer</footer>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const messages = await getMessages();
+
+  return { props: { messages }, revalidate: 5 };
 };
 
 export default Home;

@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import SocketIOClient from "socket.io-client";
 
+interface IMessage {
+  name: string;
+  message: string;
+}
+
 export const useSocket = (url: string) => {
   const [socket, setSocket] = useState<any>(null);
 
@@ -14,7 +19,12 @@ export const useSocket = (url: string) => {
     if (newSocket) return () => newSocket.disconnect();
   }, []);
 
-  const handleSocketPost = async (data: string) => {
+  const handleSocketPost = async (data: IMessage) => {
+    console.log(
+      "🚀 ~ file: useSocket.tsx ~ line 23 ~ handleSocketPost ~ data",
+      data
+    );
+
     await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {
