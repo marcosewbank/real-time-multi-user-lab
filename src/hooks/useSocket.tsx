@@ -20,11 +20,6 @@ export const useSocket = (url: string) => {
   }, []);
 
   const handleSocketPost = async (data: IMessage) => {
-    console.log(
-      "🚀 ~ file: useSocket.tsx ~ line 23 ~ handleSocketPost ~ data",
-      data
-    );
-
     await fetch("http://localhost:3000/api/chat", {
       method: "POST",
       headers: {

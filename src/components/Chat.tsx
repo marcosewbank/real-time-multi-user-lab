@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, List, ListIcon, ListItem } from "@chakra-ui/react";
 import { useSocket } from "../hooks/useSocket";
-import { MdCheckCircle, MdFace } from "react-icons/md";
+import { MdCheckCircle, MdDeleteForever } from "react-icons/md";
 import Message from "./Message";
 
 interface IMessages {
@@ -21,6 +21,19 @@ export const Chat = ({ messages }: IMessages) => {
     `http://localhost:3000/${process.env.BASE_URL}` ?? ""
   );
 
+  const handleDelete = async (id: number) => {
+    setMessageList((oldState) => {
+      const newMessages = oldState.filter((message) => id !== message.id);
+
+      return newMessages;
+    });
+
+    await fetch("/api/messages", {
+      method: "DELETE",
+      body: JSON.stringify(id),
+    });
+  };
+
   useEffect(() => {
     if (socket) {
       // update chat on new message dispatched
@@ -36,10 +49,15 @@ export const Chat = ({ messages }: IMessages) => {
     <Box p="2rem">
       <List spacing={3}>
         {messagesList.length ? (
-          messagesList.map(({ name, message }, i) => (
-            <ListItem key={"msg-" + i}>
+          messagesList.map(({ name, message, id }) => (
+            <ListItem key={id}>
               <ListIcon as={MdCheckCircle} color="green.500" />
               {name}: {message}
+              <ListIcon
+                as={MdDeleteForever}
+                onClick={() => handleDelete(id)}
+                color="green.500"
+              />
             </ListItem>
           ))
         ) : (

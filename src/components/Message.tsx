@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { Box, Button, Input } from "@chakra-ui/react";
+import { createMessage } from "../lib/messages";
 
 type Props = {};
 
 const Message = (props: any) => {
   const [nickname, setNickName] = useState<string | null>();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const messageInput = event.currentTarget.elements.namedItem(
       "message"
     ) as HTMLInputElement;
 
-    props.handleSocketPost({
+    const message = {
       name: nickname ?? "Anonymous",
       message: messageInput.value ?? " ",
+    };
+
+    props.handleSocketPost(message);
+
+    await fetch("/api/messages", {
+      method: "POST",
+      body: JSON.stringify(message),
     });
 
     messageInput.value = "";

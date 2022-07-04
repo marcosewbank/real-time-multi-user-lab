@@ -7,8 +7,6 @@ import { getMessages } from "../lib/messages";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = (props: any) => {
-  console.log("🚀 ~ file: index.tsx ~ line 10 ~ props", props);
-
   return (
     <div className={styles.container}>
       <Head>
