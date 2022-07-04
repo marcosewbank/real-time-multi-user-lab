@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next-api";
+import { NextApiRequest, NextApiResponse } from "next";
 import { createMessage, deleteMessage, getMessages } from "../../lib/messages";
 
 export default async function handler(
