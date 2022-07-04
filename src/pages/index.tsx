@@ -16,11 +16,11 @@ const Home: NextPage = (props: any) => {
       </Head>
 
       <Container as="main" padding={["3rem", "2rem"]}>
-        <Heading>A simple chat</Heading>
+        <Heading mb="2rem">A simple chat</Heading>
         <Chat messages={props.messages} />
       </Container>
 
-      <footer className={styles.footer}>Footer</footer>
+      {/* <footer className={styles.footer}>Footer</footer> */}
     </div>
   );
 };

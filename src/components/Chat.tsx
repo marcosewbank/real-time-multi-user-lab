@@ -54,7 +54,7 @@ export const Chat = ({ messages }: IMessages) => {
 
   return (
     <Box>
-      <List spacing={3}>
+      <List spacing={3} maxHeight="70vh" overflow="hidden" overflowY="scroll">
         {messagesList.length ? (
           messagesList.map(({ name, message, id }) => (
             <ListItem key={id} mb="0.5rem">
@@ -74,6 +74,7 @@ export const Chat = ({ messages }: IMessages) => {
                   as={MdDeleteForever}
                   onClick={() => handleDelete(id)}
                   color="green.500"
+                  marginLeft="auto"
                 />
               </Box>
               <Divider mb="0.5rem" />

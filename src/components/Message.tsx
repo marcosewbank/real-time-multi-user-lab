@@ -30,7 +30,7 @@ const Message = (props: any) => {
   };
 
   return (
-    <Box display="flex" flexDirection="row">
+    <Box display="flex" flexDirection="row" paddingTop="1rem">
       {nickname ? (
         <Button
           onClick={() => {
