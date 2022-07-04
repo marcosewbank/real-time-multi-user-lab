@@ -34,7 +34,7 @@ export const Chat = () => {
 
   return (
     <Box>
-      <List spacing={3}>
+      <List data-testid="chat" spacing={3}>
         {messageList.length ? (
           messageList.map((chat, i) => (
             <ListItem key={"msg_" + i}>
@@ -51,7 +51,12 @@ export const Chat = () => {
       </List>
       <form onSubmit={handleSubmit}>
         <Box display="flex" flexDirection="row">
-          <Input id="message" placeholder="Send your message" maxW="300px" />
+          <Input
+            id="message"
+            placeholder="Send your message"
+            data-testid="message"
+            maxW="300px"
+          />
           <Button type="submit">Send</Button>
         </Box>
       </form>
